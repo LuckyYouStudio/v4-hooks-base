@@ -1,0 +1,24 @@
+# build output
+/out/
+/cache/
+/checker/out/
+/checker/cache/
+
+# forge script broadcast records
+/broadcast/
+
+# dependencies (root lib/ only - checker/src/lib/ is source and IS committed): fetched at pinned commits by script/install-deps.sh (see README, "Dependencies")
+/lib/
+
+# checker reports about arbitrary / third-party addresses: never committed
+/checker/reports-local/
+
+# secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# editor / OS
+.DS_Store
+.idea/
+.vscode/

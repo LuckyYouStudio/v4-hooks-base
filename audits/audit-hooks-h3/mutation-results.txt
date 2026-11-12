@@ -1,0 +1,27 @@
+M1 _classify: Panic no longer 'unexpected'
+   -> KILLED by 2 test(s): test_S7_vulnerable_swapFlagged, test_matrix_writeFile  [('70', '2')]
+M2 b: stranger never probed inside an unlock
+   -> SURVIVED  [('72', '0')]
+M3 b: effect = hook's own storage writes only (no events, no ETH, no other contracts)
+   -> SURVIVED  [('72', '0')]
+M4 c: shared changed slot no longer UNKNOWN
+   -> SURVIVED  [('72', '0')]
+M5 _classify: control-pool revert masks a revert that came out of the hook
+   -> SURVIVED  [('72', '0')]
+M6 h: ERC-6909 claims ignored
+   -> SURVIVED  [('72', '0')]
+M7 f: same-block test ignores the swap after the large opposite swap
+   -> KILLED by 1 test(s): test_matrix_writeFile  [('70', '2')]
+M8 i: ratio spread no longer a hint (only take/no-take)
+   -> KILLED by 2 test(s): test_S4_vulnerable_onlyAHint, test_matrix_writeFile  [('70', '2')]
+M9 e: no 1-wei and no 100x swaps
+   -> SURVIVED  [('72', '0')]
+M10 c: reference swaps compared without fee and pool amounts
+   -> SURVIVED  [('72', '0')]
+M11 d: fee-collection step (liquidityDelta 0) and last-LP step not run
+   -> KILLED by 2 test(s): test_S1_vulnerable_permissionsAndRemoveFlagged, test_S6_vulnerable_removeFlagged  [('70', '2')]
+M12 b: 'indistinct' comparison disabled
+   -> KILLED by 2 test(s): test_noCallerCheckBehindStrictHookData_isUnknownNotPass, test_revertBomb  [('70', '2')]
+RESTORED
+
+[exited with code 0]

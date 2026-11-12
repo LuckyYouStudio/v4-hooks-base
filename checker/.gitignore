@@ -1,0 +1,4 @@
+out/
+cache/
+# CHECK_REPORT output of the command-line entry (may be about third-party addresses): never committed
+reports-local/

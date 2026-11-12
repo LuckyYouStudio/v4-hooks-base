@@ -1,0 +1,62 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+# v4-core's PoolManager is `pragma solidity 0.8.26` (exact) and needs transient storage (cancun).
+solc_version = "0.8.26"
+evm_version = "cancun"
+optimizer = true
+optimizer_runs = 800
+via_ir = false
+bytecode_hash = "none"
+# Test-only: the H-1 regression runs 15,000 swaps in one test (~1.5e9 gas); the default limit is 2^30.
+# Not a compiler setting, does not change any bytecode.
+gas_limit = 8000000000
+# Fork RPC comes from the BASE_RPC_URL env var (see test/fork/); never commit keys.
+
+[fuzz]
+runs = 512
+
+[invariant]
+runs = 64
+depth = 128
+fail_on_revert = true
+
+[lint]
+lint_on_build = false
+
+# ---------------------------------------------------------------------------------------------------
+# H3 hook safety checker (checker/). Separate profiles so that the default profile (the two hooks, their
+# offline + fork tests, their bytecode) is untouched: every key not listed here is inherited from
+# [profile.default] (same solc, evm, optimizer, via_ir, bytecode_hash), so the hooks imported by the
+# checker compile to the same bytecode.
+#   checker      the checker's own tests:      FOUNDRY_PROFILE=checker forge test
+#   checker-run  checking a hook by address:   checker/script/check-hook.sh  (same build, same artifacts)
+# ---------------------------------------------------------------------------------------------------
+[profile.checker]
+src = "checker"
+test = "checker/test"
+script = "checker/script"
+out = "checker/out"
+cache_path = "checker/cache"
+# Execution limit only (no bytecode effect): a hostile hook may burn every gas-capped probe to the cap.
+gas_limit = "18446744073709551615"
+# On a fork Foundry otherwise clamps the gas of every sub-call to the forked block's gas limit (40M on
+# Base), which is less than one recorded multi-operation flow of the checker needs. Each single
+# PoolManager operation the checker performs keeps its own 30M cap (checker/src/CheckerOps.sol).
+disable_block_gas_limit = true
+# The checker's own tests write the two sample matrices to checker/reports/ and nothing else.
+fs_permissions = [{ access = "read-write", path = "checker/reports" }]
+
+# The command-line entry (checker/test/CheckHook.t.sol) run against somebody's hook address. Identical
+# to [profile.checker] except for where files may be written: ONLY checker/reports-local/ (git-ignored).
+# A run against third-party code therefore has no write access to the committed files in checker/reports/.
+[profile.checker-run]
+src = "checker"
+test = "checker/test"
+script = "checker/script"
+out = "checker/out"
+cache_path = "checker/cache"
+gas_limit = "18446744073709551615"
+disable_block_gas_limit = true
+fs_permissions = [{ access = "read-write", path = "checker/reports-local" }]
